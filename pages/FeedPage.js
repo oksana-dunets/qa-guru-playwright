@@ -21,6 +21,12 @@ export class FeedPage {
       this.firstArticlePreview.locator('button').first();
   }
 
+  articleTitleByText(title) {
+    return this.page.locator('.article-preview h1', {
+      hasText: title
+    });
+  }
+
   async openGlobalFeed() {
     await this.globalFeedButton.click();
   }

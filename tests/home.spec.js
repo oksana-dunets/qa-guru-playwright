@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker';
 import { MainPage } from '../pages/MainPage';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
@@ -66,10 +67,11 @@ test('Edit Article', async ({ page }) => {
 
 test('Delete Article', async ({ page }) => {
   const home = new HomePage(page);
+  const feed = new FeedPage(page);
   const article = new ArticlePage(page);
   const editor = new EditorPage(page);
 
-  const title = `Article ${Date.now()}`;
+  const title = `Article ${faker.string.uuid()}`;
 
   await home.open();
 
@@ -83,7 +85,9 @@ test('Delete Article', async ({ page }) => {
 
   await article.deleteArticle();
 
-  await expect(page).toHaveURL('https://realworld.qa.guru/#/');
+  await feed.openGlobalFeed();
+
+  await expect(feed.articleTitleByText(title)).toHaveCount(0);
 });
 
 test('Favorite Article', async ({ page }) => {
