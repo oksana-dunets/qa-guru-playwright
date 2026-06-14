@@ -12,24 +12,6 @@ export class HomePage {
 
     this.settingsButton =
       page.locator('a[href="#/settings"]');
-
-    this.globalFeedButton =
-      page.locator('.feed-toggle .nav-link', {
-        hasText: 'Global Feed'
-      });
-
-    this.firstArticlePreview =
-      page.locator('.article-preview')
-        .filter({
-          has: page.locator('h1')
-        })
-        .first();
-
-    this.firstArticleTitle =
-      this.firstArticlePreview.locator('h1');
-
-    this.firstArticleFavoriteButton =
-      this.firstArticlePreview.locator('button').first();
   }
 
   async open() {
@@ -44,13 +26,5 @@ export class HomePage {
     await this.userMenuButton.click();
 
     await this.settingsButton.click();
-  }
-
-  async openGlobalFeed() {
-    await this.globalFeedButton.click();
-  }
-
-  async favoriteFirstArticle() {
-    await this.firstArticleFavoriteButton.click();
   }
 }

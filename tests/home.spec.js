@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
+import { FeedPage } from '../pages/FeedPage';
 import { ArticlePage } from '../pages/ArticlePage';
 import { EditorPage } from '../pages/EditorPage';
 import { ProfilePage } from '../pages/ProfilePage';
@@ -83,6 +84,7 @@ test('Delete Article', async ({ page }) => {
 
 test('Favorite Article', async ({ page }) => {
   const home = new HomePage(page);
+  const feed = new FeedPage(page);
   const article = new ArticlePage(page);
   const editor = new EditorPage(page);
 
@@ -102,13 +104,13 @@ test('Favorite Article', async ({ page }) => {
 
   await home.open();
 
-  await home.openGlobalFeed();
+  await feed.openGlobalFeed();
 
-  await expect(home.firstArticleTitle).toHaveText(title);
+  await expect(feed.firstArticleTitle).toHaveText(title);
 
-  await home.favoriteFirstArticle();
+  await feed.favoriteFirstArticle();
 
-  await expect(home.firstArticleFavoriteButton).toContainText('1');
+  await expect(feed.firstArticleFavoriteButton).toContainText('1');
 });
 
 test('Update Profile', async ({ page, browser }) => {
