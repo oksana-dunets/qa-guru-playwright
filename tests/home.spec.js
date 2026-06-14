@@ -2,42 +2,42 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { ArticlePage } from '../pages/ArticlePage';
+import { EditorPage } from '../pages/EditorPage';
 import { ProfilePage } from '../pages/ProfilePage';
+
+const email = 'oksana@test6.com';
+const currentPassword = 'test12345';
 
 test.beforeEach(async ({ page }) => {
   const login = new LoginPage(page);
 
   await login.open();
 
-  await login.login(
-    'oksana@test6.com',
-    'test12345'
-  );
+  await login.login(email, currentPassword);
 });
 
 test('Create Article', async ({ page }) => {
   const home = new HomePage(page);
   const article = new ArticlePage(page);
+  const editor = new EditorPage(page);
 
   const title = `Article ${Date.now()}`;
 
   await home.clickNewArticle();
 
-  await article.createArticle(
+  await editor.createArticle(
     title,
     'Created by autotest',
     'Test article body'
   );
 
-
   await expect(article.articleTitle).toHaveText(title);
-
-
 });
 
 test('Edit Article', async ({ page }) => {
   const home = new HomePage(page);
   const article = new ArticlePage(page);
+  const editor = new EditorPage(page);
 
   const title = `Article ${Date.now()}`;
   const updatedTitle = `Updated ${Date.now()}`;
@@ -46,23 +46,23 @@ test('Edit Article', async ({ page }) => {
 
   await home.clickNewArticle();
 
-  await article.createArticle(
+  await editor.createArticle(
     title,
-    'Сreated by autotest',
+    'Created by autotest',
     'Test article body'
   );
 
   await article.openEditArticle();
 
-  await article.updateArticleTitle(updatedTitle);
+  await editor.updateArticleTitle(updatedTitle);
 
   await expect(article.articleTitle).toHaveText(updatedTitle);
 });
 
-
 test('Delete Article', async ({ page }) => {
   const home = new HomePage(page);
   const article = new ArticlePage(page);
+  const editor = new EditorPage(page);
 
   const title = `Article ${Date.now()}`;
 
@@ -70,9 +70,9 @@ test('Delete Article', async ({ page }) => {
 
   await home.clickNewArticle();
 
-  await article.createArticle(
+  await editor.createArticle(
     title,
-    'Сreated by autotest',
+    'Created by autotest',
     'Test article body'
   );
 
@@ -81,10 +81,10 @@ test('Delete Article', async ({ page }) => {
   await expect(page).toHaveURL('https://realworld.qa.guru/#/');
 });
 
-
 test('Favorite Article', async ({ page }) => {
   const home = new HomePage(page);
   const article = new ArticlePage(page);
+  const editor = new EditorPage(page);
 
   const title = `Article ${Date.now()}`;
 
@@ -92,9 +92,9 @@ test('Favorite Article', async ({ page }) => {
 
   await home.clickNewArticle();
 
-  await article.createArticle(
+  await editor.createArticle(
     title,
-    'Сreated by autotest',
+    'Created by autotest',
     'Test article body'
   );
 
@@ -115,8 +115,6 @@ test('Update Profile', async ({ page, browser }) => {
   const home = new HomePage(page);
   const profile = new ProfilePage(page);
 
-  const email = 'oksana@test6.com';
-  const currentPassword = 'test12345';
   const bio = `This account was updated by an automated test ${new Date().toLocaleString()}`;
 
   await home.open();
