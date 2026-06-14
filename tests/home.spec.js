@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { MainPage } from '../pages/MainPage';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { FeedPage } from '../pages/FeedPage';
@@ -10,9 +11,12 @@ const email = 'oksana@test6.com';
 const currentPassword = 'test12345';
 
 test.beforeEach(async ({ page }) => {
+  const main = new MainPage(page);
   const login = new LoginPage(page);
 
-  await login.open();
+  await main.open();
+
+  await main.openLoginPage();
 
   await login.login(email, currentPassword);
 });
@@ -132,10 +136,13 @@ test('Update Profile', async ({ page, browser }) => {
   const newContext = await browser.newContext();
   const newPage = await newContext.newPage();
 
+  const mainInNewSession = new MainPage(newPage);
   const loginInNewSession = new LoginPage(newPage);
   const homeInNewSession = new HomePage(newPage);
 
-  await loginInNewSession.open();
+  await mainInNewSession.open();
+
+  await mainInNewSession.openLoginPage();
 
   await loginInNewSession.login(email, currentPassword);
 
