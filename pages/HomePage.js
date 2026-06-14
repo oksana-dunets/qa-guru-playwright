@@ -48,11 +48,6 @@ export class HomePage {
 
   async openGlobalFeed() {
     await this.globalFeedButton.click();
-
-    await this.firstArticleTitle.waitFor({
-      state: 'visible',
-      timeout: 15000
-    });
   }
 
   async favoriteFirstArticle() {

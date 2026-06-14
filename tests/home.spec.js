@@ -1,19 +1,18 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { ArticlePage } from '../pages/ArticlePage';
 import { ProfilePage } from '../pages/ProfilePage';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('https://realworld.qa.guru/#/login');
+  const login = new LoginPage(page);
 
-  await page.getByPlaceholder('Email').fill('oksana@test6.com');
-  await page.getByPlaceholder('Password').fill('test12345');
+  await login.open();
 
-  await page.getByRole('button', { name: 'Login' }).click();
-
-  await expect(
-    page.locator('a[href="#/editor"]')
-  ).toBeVisible();
+  await login.login(
+    'oksana@test6.com',
+    'test12345'
+  );
 });
 
 test('Create Article', async ({ page }) => {
@@ -105,31 +104,42 @@ test('Favorite Article', async ({ page }) => {
 
   await home.openGlobalFeed();
 
-  await expect(home.firstArticleTitle).toHaveText(title, {
-    timeout: 15000
-  });
+  await expect(home.firstArticleTitle).toHaveText(title);
 
   await home.favoriteFirstArticle();
 
   await expect(home.firstArticleFavoriteButton).toContainText('1');
 });
 
-test('Update Profile', async ({ page }) => {
+test('Update Profile', async ({ page, browser }) => {
   const home = new HomePage(page);
   const profile = new ProfilePage(page);
 
+  const email = 'oksana@test6.com';
+  const currentPassword = 'test12345';
   const bio = `This account was updated by an automated test ${new Date().toLocaleString()}`;
-  const password = 'test12345';
 
   await home.open();
 
   await home.openSettings();
 
-  await profile.updateBio(bio, password);
+  await profile.updateBio(bio, currentPassword);
 
   await profile.openSettings();
 
   await expect(profile.bioInput).toHaveValue(bio);
+
+  const newContext = await browser.newContext();
+  const newPage = await newContext.newPage();
+
+  const loginInNewSession = new LoginPage(newPage);
+  const homeInNewSession = new HomePage(newPage);
+
+  await loginInNewSession.open();
+
+  await loginInNewSession.login(email, currentPassword);
+
+  await expect(homeInNewSession.newArticleButton).toBeVisible();
+
+  await newContext.close();
 });
-
-

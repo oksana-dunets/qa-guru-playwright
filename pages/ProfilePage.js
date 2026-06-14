@@ -14,10 +14,10 @@ export class ProfilePage {
       });
   }
 
-  async updateBio(text, password) {
+  async updateBio(text, currentPassword) {
     await this.bioInput.fill(text);
 
-    await this.passwordInput.fill(password);
+    await this.passwordInput.fill(currentPassword);
 
     await Promise.all([
       this.page.waitForResponse(response =>
