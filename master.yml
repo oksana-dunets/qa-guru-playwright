@@ -1,0 +1,27 @@
+# Это комментарий
+# Это название пайплайна
+name: qa-guru-playwright автотесты UI/API
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+# ручной запуск
+ workflow_dispatch:
+
+jobs:
+  qa-guru-playwright: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+      uses: actions/checkout@v7.0.0
+      - name: Setup Node.js environment
+      uses: actions/setup-node@v6.4.0
+      - name: Установить пакеты
+        run: npm ci
+      - name: Установить браузеры
+        run: npx playwright install --with-deps
+      - name: Запусти тесты
+        run: npm playwright test
